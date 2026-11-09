@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!--
+        GROUP: To-Do User
+
+        record:
+            Membuat/memperbarui record di database Odoo.
+
+        id:
+            External identifier.
+            Nama lengkapnya menjadi todo_app.group_todo_user.
+
+        model="res.groups":
+            Model bawaan untuk grup keamanan.
+    -->
+    <record id="group_todo_user" model="res.groups">
+
+        <!-- Nama group yang terlihat di Odoo -->
+        <field name="name">To-Do User</field>
+
+        <!--
+            implied_ids:
+                Group lain yang disertakan secara implisit.
+
+            ref('base.group_user'):
+                Mengambil ID group Internal User bawaan.
+
+            (4, ID):
+                Perintah ORM Many2many untuk menambahkan
+                relasi ke record yang sudah ada.
+        -->
+        <field name="implied_ids"
+               eval="[(4, ref('base.group_user'))]"/>
+
+    </record>
+
+
+    <!--
+        RECORD RULE: Private To-Do
+
+        ir.rule:
+            Aturan pembatasan akses berdasarkan record.
+
+        Group sengaja tidak ditentukan di sini:
+            Rule ini berlaku secara global pada model todo.item.
+
+        Dengan demikian, semua akses biasa ke todo.item
+        dibatasi oleh kepemilikan create_uid.
+    -->
+    <record id="rule_todo_item_private" model="ir.rule">
+
+        <!-- Nama aturan untuk administrasi/debugging -->
+        <field name="name">
+            To-Do Item: Own Records Only
+        </field>
+
+        <!--
+            model_id:
+                Relasi Many2one ke metadata ir.model.
+
+            model_todo_item:
+                External ID yang dibuat otomatis oleh Odoo
+                untuk model Python _name = "todo.item".
+        -->
+        <field name="model_id" ref="model_todo_item"/>
+
+        <!--
+            domain_force:
+                Domain keamanan yang diterapkan server-side.
+
+            create_uid:
+                Field bawaan Odoo yang menyimpan pembuat record.
+
+            user.id:
+                ID user Odoo yang sedang menjalankan operasi.
+
+            '=':
+                Operator perbandingan sama dengan.
+        -->
+        <field name="domain_force">
+            [('create_uid', '=', user.id)]
+        </field>
+
+        <!--
+            Boolean berikut menentukan operasi
+            yang dikenai record rule.
+
+            Semua True karena privasi harus berlaku
+            saat membaca, mengubah, membuat, dan menghapus.
+        -->
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+
+    </record>
+
+</odoo>

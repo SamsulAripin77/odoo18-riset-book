@@ -1,34 +1,64 @@
-# -*- coding: utf-8 -*-
 {
-    'name': "todo_app",
+    # Nama yang akan terlihat pada daftar Apps Odoo.
+    "name": "To-Do App",
 
-    'summary': "Short (1 phrase/line) summary of the module's purpose",
+    # Versi modul, bukan versi Python.
+    # Konvensi yang digunakan: versi Odoo + versi modul.
+    "version": "18.0.1.0.0",
 
-    'description': """
-Long description of module's purpose
+    # Ringkasan yang terlihat pada informasi aplikasi.
+    "summary": "Personal To-Do List with Work Team",
+
+    "description": """
+        To-Do application for learning Odoo 18 development.
+        Adapted from Odoo 15 Development Essentials.
     """,
 
-    'author': "My Company",
-    'website': "https://www.yourcompany.com",
+    "author": "Samsul Aripin",
 
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
-    'category': 'Uncategorized',
-    'version': '0.1',
+    # Kategori modul di Apps.
+    "category": "Productivity",
 
-    # any module necessary for this one to work correctly
-    'depends': ['base'],
+    # LGPL-3 merupakan salah satu lisensi yang didukung Odoo.
+    "license": "LGPL-3",
 
-    # always loaded
-    'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+    # OPSI 1 (DIPAKAI):
+    # Dependensi pada base dan Contacts.
+    # Modul contacts memastikan aplikasi Contacts tersedia.
+    "depends": ["base", "contacts"],
+
+    # OPSI 2:
+    # Gunakan ini jika hanya membutuhkan model res.partner
+    # dan tidak perlu aplikasi Contacts secara eksplisit.
+    # "depends": ["base"],
+
+    # Odoo memproses file berikut secara berurutan.
+    # External ID yang direferensikan harus sudah tersedia.
+    "data": [
+        # 1. Group dan Record Rule
+        "security/todo_security.xml",
+
+        # 2. Izin akses model
+        "security/ir.model.access.csv",
+
+        # 3. Tampilan To-Do dan Window Action
+        "views/todo_item_views.xml",
+
+        # 4. Menu menggunakan Action dari file sebelumnya
+        "views/todo_menu.xml",
+
+        # 5. Ekstensi tampilan Contacts
+        "views/res_partner_views.xml",
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+
+    # False berarti modul tidak bisa diinstal.
+    "installable": True,
+
+    # True membuat modul dikategorikan sebagai aplikasi.
+    "application": True,
+
+    # True berarti modul otomatis diinstal jika
+    # seluruh dependencies terpenuhi.
+    # Kita sengaja memilih False untuk instalasi manual.
+    "auto_install": False,
 }
-

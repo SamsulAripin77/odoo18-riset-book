@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!--
+        ir.ui.view:
+            Model untuk menyimpan definisi tampilan.
+
+        inherit_id:
+            Menunjuk view asli yang ingin diperluas.
+
+        base.view_partner_form:
+            External ID form Contact bawaan Odoo.
+    -->
+    <record id="view_partner_form_todo_inherit"
+            model="ir.ui.view">
+
+        <field name="name">
+            res.partner.form.todo.inherit
+        </field>
+
+        <!-- Model yang ditampilkan -->
+        <field name="model">res.partner</field>
+
+        <!-- View yang akan diperluas -->
+        <field name="inherit_id"
+               ref="base.view_partner_form"/>
+
+        <field name="arch" type="xml">
+
+            <!--
+                XPath:
+                    Memilih elemen pada XML parent view.
+
+                //field[@name='category_id']:
+                    Cari field bernama category_id,
+                    yaitu Tags pada Contact.
+
+                position="after":
+                    Sisipkan elemen baru sesudah
+                    elemen target.
+
+                Field baru harus sudah didefinisikan
+                dalam models/res_partner.py.
+            -->
+            <xpath expr="//field[@name='category_id']"
+                   position="after">
+
+                <field name="is_work_team"/>
+
+            </xpath>
+
+        </field>
+
+    </record>
+
+</odoo>

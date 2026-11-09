@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- ====================================== -->
+    <!-- LIST VIEW                              -->
+    <!-- ====================================== -->
+
+    <!--
+        ir.ui.view:
+            Model Odoo untuk definisi tampilan.
+
+        id:
+            XML ID lokal untuk view.
+
+        arch type="xml":
+            Isi struktur UI yang akan diproses Odoo.
+    -->
+    <record id="view_todo_item_list" model="ir.ui.view">
+
+        <field name="name">todo.item.list</field>
+
+        <!-- Model yang datanya ditampilkan -->
+        <field name="model">todo.item</field>
+
+        <field name="arch" type="xml">
+
+            <!--
+                Odoo 18 menggunakan <list>.
+                Pada Odoo 15, bentuknya <tree>.
+
+                string:
+                    Judul tampilan.
+            -->
+            <list string="To-Do Items">
+
+                <!--
+                    Nama field harus sesuai model Python.
+
+                    optional="show":
+                        Kolom ditampilkan secara default,
+                        tetapi user bisa menyembunyikannya.
+                -->
+                <field name="description"/>
+
+                <field name="is_done"
+                       string="Done"
+                       widget="boolean_toggle"/>
+
+                <field name="work_team_ids"
+                       widget="many2many_tags"
+                       optional="show"/>
+
+                <!--
+                    create_uid adalah field bawaan ORM.
+
+                    optional="hide":
+                        Kolom tersedia tetapi tersembunyi
+                        secara default.
+                -->
+                <field name="create_uid"
+                       string="Created By"
+                       optional="hide"/>
+
+            </list>
+
+        </field>
+    </record>
+
+
+    <!-- ====================================== -->
+    <!-- FORM VIEW                              -->
+    <!-- ====================================== -->
+
+    <record id="view_todo_item_form" model="ir.ui.view">
+
+        <field name="name">todo.item.form</field>
+
+        <field name="model">todo.item</field>
+
+        <field name="arch" type="xml">
+
+            <!--
+                form:
+                    Tampilan satu record.
+
+                sheet:
+                    Kontainer utama form standar Odoo.
+
+                group:
+                    Mengatur layout field dan label.
+            -->
+            <form string="To-Do Item">
+
+                <sheet>
+
+                    <group>
+
+                        <field name="description"
+                               placeholder="What needs to be done?"/>
+
+                        <!--
+                            widget="boolean_toggle":
+                                Tampilan switch.
+
+                            Alternatif:
+                                Tanpa widget menggunakan
+                                representasi Boolean default.
+                        -->
+                        <field name="is_done"
+                               widget="boolean_toggle"/>
+
+                        <!--
+                            widget="many2many_tags":
+                                Menampilkan anggota sebagai tag.
+
+                            Domain dari Python field
+                            tetap digunakan saat memilih Contact.
+                        -->
+                        <field name="work_team_ids"
+                               widget="many2many_tags"
+                               options="{'no_create': True, 'no_create_edit': True}"/>
+
+                    </group>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <!-- ====================================== -->
+    <!-- SEARCH VIEW                            -->
+    <!-- ====================================== -->
+
+    <record id="view_todo_item_search" model="ir.ui.view">
+
+        <field name="name">todo.item.search</field>
+
+        <field name="model">todo.item</field>
+
+        <field name="arch" type="xml">
+
+            <search string="Search To-Do Items">
+
+                <!-- Pencarian berdasarkan description -->
+                <field name="description"/>
+
+                <!--
+                    filter:
+                        Membuat pilihan filter siap pakai.
+
+                    name:
+                        Nama teknis filter untuk context.
+
+                    string:
+                        Teks yang terlihat di UI.
+
+                    domain:
+                        Kondisi record yang akan ditampilkan.
+                -->
+                <filter
+                    name="not_done"
+                    string="Not Done"
+                    domain="[('is_done', '=', False)]"
+                />
+
+                <filter
+                    name="done"
+                    string="Done"
+                    domain="[('is_done', '=', True)]"
+                />
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <!-- ====================================== -->
+    <!-- WINDOW ACTION                          -->
+    <!-- ====================================== -->
+
+    <!--
+        ir.actions.act_window:
+            Action untuk membuka sebuah model
+            menggunakan view tertentu.
+
+        res_model:
+            Model target.
+
+        view_mode:
+            Urutan tipe view yang tersedia.
+            Odoo 18 menggunakan list,form.
+    -->
+    <record id="action_todo_item" model="ir.actions.act_window">
+
+        <field name="name">To-Do Items</field>
+
+        <field name="res_model">todo.item</field>
+
+        <field name="view_mode">list,form</field>
+
+        <!--
+            OPSI 1 (DIPAKAI):
+            Otomatis aktifkan filter Not Done
+            saat action dibuka.
+
+            search_default_not_done:
+                search_default_ + nama filter
+                yang didefinisikan pada Search View.
+        -->
+        <field name="context">
+            {'search_default_not_done': 1}
+        </field>
+
+        <!--
+            OPSI 2:
+            Tidak mengaktifkan filter default.
+
+            Jika dipilih, ganti field context di atas
+            dengan field kosong berikut:
+
+            <field name="context">{}</field>
+        -->
+
+    </record>
+
+</odoo>

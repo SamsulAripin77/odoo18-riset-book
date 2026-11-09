@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!--
+        menuitem:
+            Shortcut deklarasi record ir.ui.menu.
+
+        id:
+            External ID menu.
+
+        name:
+            Label menu yang terlihat.
+
+        sequence:
+            Urutan relatif terhadap menu lain.
+
+        groups:
+            Membatasi visibilitas menu
+            kepada group tertentu.
+    -->
+
+    <!-- Menu utama aplikasi -->
+    <menuitem
+        id="menu_todo_root"
+        name="To-Do"
+        sequence="30"
+        groups="todo_app.group_todo_user"
+    />
+
+    <!--
+        Submenu untuk membuka daftar tugas.
+
+        parent:
+            ID menu induk.
+
+        action:
+            External ID Window Action yang dibuat
+            di todo_item_views.xml.
+    -->
+    <menuitem
+        id="menu_todo_items"    
+        name="My To-Do Items"
+        parent="menu_todo_root"
+        action="action_todo_item"
+        sequence="10"
+        groups="todo_app.group_todo_user"
+    />
+
+</odoo>
